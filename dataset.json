@@ -1,12 +1,12 @@
 {
   "$schema": "schema/dataset.schema.json",
   "schema_version": "2.0",
-  "name": "replace-with-repository-name",
-  "title": "Replace with dataset title",
-  "description": "Replace with a concise description of this feature-evolution dataset.",
-  "repository": "https://github.com/isselab/replace-with-repository-name",
+  "name": "test-dataset",
+  "title": "test-dataset",
+  "description": "Feature-traced dataset maintained in mberkayci/test-dataset.",
+  "repository": "https://github.com/mberkayci/test-dataset",
   "license": "MIT",
-  "created": "2026-01-01",
+  "created": "2026-11-12",
   "authors": [
     {
       "name": "Replace with author or research group"
