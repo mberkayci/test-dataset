@@ -8,16 +8,27 @@
     {
       "order": 1,
       "path": "prompts/001.md"
+    },
+    {
+      "order": 2,
+      "path": "prompts/002.md"
     }
   ],
-  "scenario_types": ["add"],
+  "scenario_types": ["add", "relocate"],
   "expected_changes": [
     {
       "id": "change-001",
       "operation": "add",
       "features_before": [],
-      "features_after": ["Replace with feature name"],
-      "description": "Replace with the intended feature-level change."
+      "features_after": ["JobApplicationTracker, Database, Applications, CreateApplication, ListApplications,ViewApplication, UpdateApplication, DeleteApplication"],
+      "description": "Set up the tracker application with fastAPI, creates application endpoints for CRUD operations."
+    },
+    {
+      "id": "change-002",
+      "operation": "relocate",
+      "features_before": ["JobApplicationTracker, Database, Applications, CreateApplication, ListApplications,ViewApplication, UpdateApplication, DeleteApplication"],
+      "features_after": ["JobApplicationTracker, Database, Applications, CreateApplication, ListApplications,ViewApplication, UpdateApplication, DeleteApplication"],
+      "description": "Restructure the project folder by features. Change nothing about the API."
     }
   ],
   "ground_truth": "ground-truth"

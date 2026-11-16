@@ -1,0 +1,1 @@
+ "add", "modify", "remove", "merge", "split", "rename", "relocate", "interact".
