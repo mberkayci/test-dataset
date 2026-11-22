@@ -26,6 +26,7 @@ Nothing is committed. There's no `.gitignore` yet, so `applications.db` and `__p
 
 To run the server: `.venv\Scripts\python -m uvicorn app.main:app --reload`. The interactive API docs are then at `http://127.0.0.1:8000/docs`.
 
+---
 
 I reorganized the project by feature, and nothing about the API changed. All 10 tests still pass, whether you run `pytest` or `python -m pytest`. The endpoints are the same: `GET`/`POST /applications`, `GET`/`PATCH`/`DELETE /applications/{application_id}`, and `/`.
 

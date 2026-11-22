@@ -83,6 +83,22 @@ def change_state(
     application = db.get(Application, application_id)
     if application is None:
         return None
+    apply_state_change(
+        application, new_state,
+        comment=comment,  # &line[StateHistory]
+    )
+    db.commit()
+    db.refresh(application)
+    return application
+
+
+def apply_state_change(
+    application: Application,
+    new_state: ApplicationState,
+    comment: str | None = None,  # &line[StateHistory]
+) -> None:
+    """Validate and apply a state change without committing, so callers can bundle it
+    into a larger transaction. Raises InvalidStateTransition if not allowed."""
     ensure_transition_allowed(application.state, new_state)
     # &begin[StateHistory]
     # Recorded in the same transaction as the state change, so history never drifts.
@@ -91,9 +107,6 @@ def change_state(
     )
     # &end[StateHistory]
     application.state = new_state
-    db.commit()
-    db.refresh(application)
-    return application
 # &end[ChangeState]
 
 

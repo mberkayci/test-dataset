@@ -12,6 +12,7 @@ JobApplicationTracker
             StateHistory
         Interviews
             AddInterview
+                AutoAdvanceToInterview
             ListInterviews
             UpdateInterview
             DeleteInterview

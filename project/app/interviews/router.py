@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.core.db import get_db
 from app.interviews import service
 from app.interviews.schemas import InterviewCreate, InterviewRead, InterviewUpdate
+from app.interviews.service import InterviewNotAllowed  # &line[AutoAdvanceToInterview]
 
 router = APIRouter(prefix="/applications/{application_id}/interviews", tags=["interviews"])
 
@@ -19,7 +20,12 @@ def _interview_not_found() -> HTTPException:
 # &begin[AddInterview]
 @router.post("", response_model=InterviewRead, status_code=status.HTTP_201_CREATED)
 def add_interview(application_id: int, payload: InterviewCreate, db: Session = Depends(get_db)):
-    interview = service.add_interview(db, application_id, payload)
+    # &begin[AutoAdvanceToInterview]
+    try:
+        interview = service.add_interview(db, application_id, payload)
+    except InterviewNotAllowed as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+    # &end[AutoAdvanceToInterview]
     if interview is None:
         raise _application_not_found()
     return interview

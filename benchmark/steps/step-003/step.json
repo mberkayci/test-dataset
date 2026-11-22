@@ -8,9 +8,13 @@
     {
       "order": 1,
       "path": "prompts/001.md"
+    },
+    {
+      "order": 2,
+      "path": "prompts/002.md"
     }
   ],
-  "scenario_types": ["add"],
+  "scenario_types": ["add", "interact"],
   "expected_changes": [
     {
       "id": "change-001",
@@ -20,6 +24,20 @@
         "Interviews", "AddInterview", "ListInterviews", "UpdateInterview", "DeleteInterview"
       ],
       "description": "Add Interview feature to the application. This includes adding, listing, updating, and deleting interviews."
+    },
+    {
+      "id": "change-002",
+      "operation": "interact",
+      "features_before": ["ChangeState", "AddInterview"],
+      "features_after": ["ChangeState", "AddInterview", "AutoAdvanceToInterview"],
+      "description": "Adding an interview triggers a state change through ChangeState and is denied for rejected or withdrawn applications."
+    },
+    {
+      "id": "change-003",
+      "operation": "add",
+      "features_before": [],
+      "features_after": ["AutoAdvanceToInterview"],
+      "description": "Add a feature that automatically moves an application to interview when an interview is added while the application is in applied or screening."
     }
   ],
   "ground_truth": "ground-truth"

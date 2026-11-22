@@ -150,3 +150,61 @@ def test_deleting_application_deletes_its_interviews(client, db_session):
         select(Interview).where(Interview.application_id == app_id)
     ).all()
     assert remaining == []
+
+
+# &begin[AutoAdvanceToInterview]
+def _move(client, app_id, state):
+    return client.post(f"/applications/{app_id}/state", json={"state": state})
+
+
+def _app(client, app_id):
+    return client.get(f"/applications/{app_id}").json()
+
+
+def _history(client, app_id):
+    return client.get(f"/applications/{app_id}/history").json()
+
+
+@pytest.mark.parametrize("path", [[], ["screening"]])
+def test_add_interview_advances_application_to_interview(client, path):
+    app_id = _create_application(client)
+    for state in path:
+        _move(client, app_id, state)
+    before = path[-1] if path else "applied"
+    assert _add(client, app_id).status_code == 201
+    assert _app(client, app_id)["state"] == "interview"
+    last = _history(client, app_id)[-1]
+    assert (last["from_state"], last["to_state"]) == (before, "interview")
+    assert last["comment"] == "Interview scheduled"
+
+
+@pytest.mark.parametrize("path", [["interview"], ["interview", "offer"]])
+def test_add_interview_keeps_later_states(client, path):
+    app_id = _create_application(client)
+    for state in path:
+        _move(client, app_id, state)
+    history_before = _history(client, app_id)
+    assert _add(client, app_id).status_code == 201
+    assert _app(client, app_id)["state"] == path[-1]
+    assert _history(client, app_id) == history_before
+
+
+def test_second_interview_does_not_add_history(client):
+    app_id = _create_application(client)
+    _add(client, app_id)
+    _add(client, app_id)
+    assert len(_history(client, app_id)) == 1
+    assert len(_list(client, app_id).json()) == 2
+
+
+@pytest.mark.parametrize("final_state", ["rejected", "withdrawn"])
+def test_add_interview_blocked_for_final_states(client, final_state):
+    app_id = _create_application(client)
+    _move(client, app_id, final_state)
+    res = _add(client, app_id)
+    assert res.status_code == 409
+    assert final_state in res.json()["detail"]
+    assert _list(client, app_id).json() == []
+    assert _app(client, app_id)["state"] == final_state
+    assert len(_history(client, app_id)) == 1
+# &end[AutoAdvanceToInterview]

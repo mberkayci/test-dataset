@@ -1,5 +1,6 @@
 Interviews
     AddInterview
+        AutoTransitionInterview
     UpdateInterview
     ListInterviews
     DeleteInterview

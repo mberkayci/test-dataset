@@ -24,6 +24,7 @@ States only move forward. Screening can be skipped, since some companies invite 
 
 Nothing is committed yet.
 
+---
 
 Every state change is now saved to a history, and you can view an application's full history, oldest change first. All 32 tests pass: the 24 existing ones plus 8 new ones. I also tried it on a copy of your `applications.db`: the history table was created on startup and recorded a change correctly.
 
