@@ -1,0 +1,6 @@
+Companies
+    CreateCompany
+    UpdateCompany
+    ListCompanies
+    DeleteCompany
+    ViewCompany

@@ -1,0 +1,42 @@
+{
+  "$schema": "../../../schema/evolution-step.schema.json",
+  "id": "step-004",
+  "sequence": 4,
+  "before_version": "v003",
+  "after_version": "v004",
+  "prompts": [
+    {
+      "order": 1,
+      "path": "prompts/001.md"
+    },
+    {
+      "order": 2,
+      "path": "prompts/002.md"
+    }
+  ],
+  "scenario_types": ["add", "modify", "interact"],
+  "expected_changes": [
+    {
+      "id": "change-001",
+      "operation": "add",
+      "features_before": [],
+      "features_after": ["Companies", "CreateCompany", "ListCompanies", "ViewCompany", "UpdateCompany", "DeleteCompany"],
+      "description": "Add managing companies. Includes creating, listing, viewing, updating and deleting companies."
+    },
+    {
+      "id": "change-002",
+      "operation": "modify",
+      "features_before": ["Applications", "CreateApplication", "UpdateApplication", "ViewApplication"],
+      "features_after": ["Applications", "CreateApplication", "UpdateApplication", "ViewApplication"],
+      "description": "Applications reference a company by id instead of storing the company name as text. Creating and updating take a company id, and viewing an application shows the company's name."
+    },
+    {
+      "id": "change-003",
+      "operation": "interact",
+      "features_before": ["DeleteCompany", "Applications"],
+      "features_after": ["DeleteCompany", "Applications"],
+      "description": "A company that still has applications cannot be deleted."
+    }
+  ],
+  "ground_truth": "ground-truth"
+}

@@ -7,6 +7,7 @@ from app.applications.models import Application
 from app.applications.models import StateChangeRecord  # &line[StateHistory]
 from app.applications.schemas import ApplicationCreate, ApplicationUpdate
 from app.applications.states import ApplicationState, ensure_transition_allowed  # &line[ApplicationState]
+from app.companies.models import Company  # &line[ApplicationCompany]
 
 
 def _normalize(data: dict[str, Any]) -> dict[str, Any]:
@@ -16,8 +17,22 @@ def _normalize(data: dict[str, Any]) -> dict[str, Any]:
     return data
 
 
+# &begin[ApplicationCompany]
+class UnknownCompany(Exception):
+    def __init__(self, company_id: int):
+        self.company_id = company_id
+        super().__init__(f"Company {company_id} does not exist.")
+
+
+def _ensure_company_exists(db: Session, company_id: int) -> None:
+    if db.get(Company, company_id) is None:
+        raise UnknownCompany(company_id)
+# &end[ApplicationCompany]
+
+
 # &begin[CreateApplication]
 def create_application(db: Session, payload: ApplicationCreate) -> Application:
+    _ensure_company_exists(db, payload.company_id)  # &line[ApplicationCompany]
     application = Application(**_normalize(payload.model_dump()))
     db.add(application)
     db.commit()
@@ -53,7 +68,12 @@ def update_application(
     application = db.get(Application, application_id)
     if application is None:
         return None
-    for field, value in _normalize(payload.model_dump(exclude_unset=True)).items():
+    changes = _normalize(payload.model_dump(exclude_unset=True))
+    # &begin[ApplicationCompany]
+    if "company_id" in changes:
+        _ensure_company_exists(db, changes["company_id"])
+    # &end[ApplicationCompany]
+    for field, value in changes.items():
         setattr(application, field, value)
     db.commit()
     db.refresh(application)

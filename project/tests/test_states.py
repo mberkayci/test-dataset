@@ -2,10 +2,11 @@ import pytest
 from sqlalchemy import create_engine, inspect, text
 
 from app.applications.states import ALLOWED_TRANSITIONS, ApplicationState
+from tests.helpers import company_id  # &line[ApplicationCompany]
 
 
 def _create(client, **overrides):
-    body = {"company": "Acme", "position": "Backend Engineer", "source": "linkedin", **overrides}
+    body = {"company_id": company_id(client), "position": "Backend Engineer", "source": "linkedin", **overrides}  # &line[ApplicationCompany]
     return client.post("/applications", json=body).json()
 
 
@@ -94,19 +95,19 @@ def test_every_state_has_a_transition_rule():
 
 # &begin[FilterByState]
 def test_filter_by_state(client):
-    a = _create(client, company="A")["id"]
-    b = _create(client, company="B")["id"]
-    _create(client, company="C")
+    a = _create(client, position="A")["id"]
+    b = _create(client, position="B")["id"]
+    _create(client, position="C")
     _move(client, a, "screening")
     _move(client, b, "rejected")
 
-    def companies(query):
-        return sorted(x["company"] for x in client.get(f"/applications{query}").json())
+    def positions(query):
+        return sorted(x["position"] for x in client.get(f"/applications{query}").json())
 
-    assert companies("?state=screening") == ["A"]
-    assert companies("?state=screening&state=rejected") == ["A", "B"]
-    assert companies("?state=offer") == []
-    assert companies("") == ["A", "B", "C"]
+    assert positions("?state=screening") == ["A"]
+    assert positions("?state=screening&state=rejected") == ["A", "B"]
+    assert positions("?state=offer") == []
+    assert positions("") == ["A", "B", "C"]
     assert client.get("/applications?state=hired").status_code == 422
 # &end[FilterByState]
 

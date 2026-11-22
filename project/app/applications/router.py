@@ -7,6 +7,7 @@ from app.applications.schemas import StateChange  # &line[ChangeState]
 from app.applications.schemas import StateChangeRead  # &line[StateHistory]
 from app.applications.states import ApplicationState, InvalidStateTransition  # &line[ApplicationState]
 from app.applications import service
+from app.applications.service import UnknownCompany  # &line[ApplicationCompany]
 
 router = APIRouter(prefix="/applications", tags=["applications"])
 
@@ -15,10 +16,21 @@ def _not_found() -> HTTPException:
     return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
 
 
+# &begin[ApplicationCompany]
+def _unknown_company(exc: UnknownCompany) -> HTTPException:
+    return HTTPException(status_code=422, detail=str(exc))
+# &end[ApplicationCompany]
+
+
 # &begin[CreateApplication]
 @router.post("", response_model=ApplicationRead, status_code=status.HTTP_201_CREATED)
 def create_application(payload: ApplicationCreate, db: Session = Depends(get_db)):
-    return service.create_application(db, payload)
+    # &begin[ApplicationCompany]
+    try:
+        return service.create_application(db, payload)
+    except UnknownCompany as exc:
+        raise _unknown_company(exc) from exc
+    # &end[ApplicationCompany]
 # &end[CreateApplication]
 
 
@@ -51,7 +63,12 @@ def get_application(application_id: int, db: Session = Depends(get_db)):
 def update_application(
     application_id: int, payload: ApplicationUpdate, db: Session = Depends(get_db)
 ):
-    application = service.update_application(db, application_id, payload)
+    # &begin[ApplicationCompany]
+    try:
+        application = service.update_application(db, application_id, payload)
+    except UnknownCompany as exc:
+        raise _unknown_company(exc) from exc
+    # &end[ApplicationCompany]
     if application is None:
         raise _not_found()
     return application

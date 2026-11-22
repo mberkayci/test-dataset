@@ -12,7 +12,7 @@ NonEmptyStr = Annotated[str, StringConstraints(strip_whitespace=True, min_length
 
 # &begin[CreateApplication]
 class ApplicationCreate(BaseModel):
-    company: NonEmptyStr
+    company_id: int  # &line[ApplicationCompany]
     position: NonEmptyStr
     job_url: HttpUrl | None = None
     source: ApplicationSource
@@ -24,13 +24,13 @@ class ApplicationCreate(BaseModel):
 class ApplicationUpdate(BaseModel):
     """Partial update: only fields present in the request body are changed."""
 
-    company: NonEmptyStr | None = None
+    company_id: int | None = None  # &line[ApplicationCompany]
     position: NonEmptyStr | None = None
     job_url: HttpUrl | None = None
     source: ApplicationSource | None = None
     applied_on: date | None = None
 
-    @field_validator("company", "position", "source", "applied_on", mode="before")
+    @field_validator("company_id", "position", "source", "applied_on", mode="before")
     @classmethod
     def reject_null(cls, value):
         # These columns are required; only job_url may be cleared with null.
@@ -44,7 +44,10 @@ class ApplicationRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    company: str
+    # &begin[ApplicationCompany]
+    company_id: int
+    company_name: str
+    # &end[ApplicationCompany]
     position: str
     job_url: str | None
     source: ApplicationSource

@@ -6,6 +6,7 @@ JobApplicationTracker
         ViewApplication
         UpdateApplication
         DeleteApplication
+        ApplicationCompany
         ApplicationState
             ChangeState
             FilterByState
@@ -16,3 +17,9 @@ JobApplicationTracker
             ListInterviews
             UpdateInterview
             DeleteInterview
+    Companies
+        CreateCompany
+        ListCompanies
+        ViewCompany
+        UpdateCompany
+        DeleteCompany

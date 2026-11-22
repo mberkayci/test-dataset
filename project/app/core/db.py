@@ -1,7 +1,7 @@
 import os
-from collections.abc import Generator
+from collections.abc import Callable, Generator
 
-from sqlalchemy import Engine, create_engine, inspect, text
+from sqlalchemy import Connection, Engine, create_engine, inspect, text
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 from sqlalchemy.schema import CreateColumn
 
@@ -18,11 +18,24 @@ class Base(DeclarativeBase):
     pass
 
 
+# Data migrations that the automatic column-adding below can't handle (e.g. replacing
+# a column). Each runs on every startup after create_all and must be idempotent.
+MIGRATIONS: list[Callable[[Connection], None]] = []
+
+
+def migration(fn: Callable[[Connection], None]) -> Callable[[Connection], None]:
+    MIGRATIONS.append(fn)
+    return fn
+
+
 def init_db(bind: Engine = engine) -> None:
     """Create missing tables, and add columns that were added to a model after its
     table was created (create_all never alters existing tables). New columns need a
     server_default or must be nullable so existing rows get a value."""
     Base.metadata.create_all(bind=bind)
+    with bind.begin() as conn:
+        for run in MIGRATIONS:
+            run(conn)
     inspector = inspect(bind)
     with bind.begin() as conn:
         for table in Base.metadata.sorted_tables:

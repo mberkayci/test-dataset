@@ -8,3 +8,7 @@ test_history.py
 StateHistory
 test_interviews.py
 Interviews
+test_companies.py
+Companies
+helpers.py
+ApplicationCompany

@@ -6,9 +6,15 @@ from sqlalchemy import Date, Enum, String
 from sqlalchemy import DateTime, ForeignKey  # &line[StateHistory]
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.orm import relationship  # &line[StateHistory]
+# &begin[ApplicationCompany]
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
+# &end[ApplicationCompany]
 
 from app.applications.states import ApplicationState  # &line[ApplicationState]
+from app.companies.models import Company  # &line[ApplicationCompany]
 from app.core.db import Base
+from app.applications import migrations  # noqa: F401  &line[ApplicationCompany]
 from app.interviews.models import Interview  # &line[Interviews]
 
 
@@ -24,7 +30,13 @@ class Application(Base):
     __tablename__ = "applications"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    company: Mapped[str] = mapped_column(String(200))
+    # &begin[ApplicationCompany]
+    company_id: Mapped[int] = mapped_column(
+        ForeignKey("companies.id", ondelete="RESTRICT"), index=True
+    )
+    # Joined eagerly: every read of an application shows its company's name.
+    company: Mapped[Company] = relationship(lazy="joined")
+    # &end[ApplicationCompany]
     position: Mapped[str] = mapped_column(String(200))
     job_url: Mapped[str | None] = mapped_column(String(2048), default=None)
     source: Mapped[ApplicationSource] = mapped_column(
@@ -63,6 +75,12 @@ class Application(Base):
         order_by=(Interview.scheduled_at, Interview.id),
     )
     # &end[Interviews]
+
+    # &begin[ApplicationCompany]
+    @property
+    def company_name(self) -> str:
+        return self.company.name
+    # &end[ApplicationCompany]
 
 
 # &begin[StateHistory]

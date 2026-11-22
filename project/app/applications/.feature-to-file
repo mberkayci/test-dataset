@@ -8,3 +8,5 @@ router.py
 Applications
 states.py
 ApplicationState
+migrations.py
+ApplicationCompany

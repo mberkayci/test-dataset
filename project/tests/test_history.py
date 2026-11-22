@@ -3,10 +3,11 @@ from datetime import UTC, datetime, timedelta
 from sqlalchemy import select
 
 from app.applications.models import StateChangeRecord
+from tests.helpers import company_id  # &line[ApplicationCompany]
 
 
 def _create(client):
-    body = {"company": "Acme", "position": "Backend Engineer", "source": "linkedin"}
+    body = {"company_id": company_id(client), "position": "Backend Engineer", "source": "linkedin"}  # &line[ApplicationCompany]
     return client.post("/applications", json=body).json()["id"]
 
 
