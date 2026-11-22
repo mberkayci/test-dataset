@@ -10,3 +10,8 @@ JobApplicationTracker
             ChangeState
             FilterByState
             StateHistory
+        Interviews
+            AddInterview
+            ListInterviews
+            UpdateInterview
+            DeleteInterview

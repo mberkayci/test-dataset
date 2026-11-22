@@ -9,6 +9,7 @@ from sqlalchemy.orm import relationship  # &line[StateHistory]
 
 from app.applications.states import ApplicationState  # &line[ApplicationState]
 from app.core.db import Base
+from app.interviews.models import Interview  # &line[Interviews]
 
 
 class ApplicationSource(StrEnum):
@@ -55,6 +56,13 @@ class Application(Base):
         order_by="(StateChangeRecord.changed_at, StateChangeRecord.id)",
     )
     # &end[StateHistory]
+    # &begin[Interviews]
+    interviews: Mapped[list[Interview]] = relationship(
+        back_populates="application",
+        cascade="all, delete-orphan",
+        order_by=(Interview.scheduled_at, Interview.id),
+    )
+    # &end[Interviews]
 
 
 # &begin[StateHistory]

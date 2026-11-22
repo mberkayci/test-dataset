@@ -1,4 +1,4 @@
-"""A helper class that generates the steps folder of the benchmark with the standard structure. Validation is done in the """
+"""A helper class that generates the steps folder and updates the steps.json file for the benchmark with the standard structure."""
 
 import sys, subprocess
 import json
