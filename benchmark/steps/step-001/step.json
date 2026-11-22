@@ -20,14 +20,14 @@
       "id": "change-001",
       "operation": "add",
       "features_before": [],
-      "features_after": ["JobApplicationTracker, Database, Applications, CreateApplication, ListApplications,ViewApplication, UpdateApplication, DeleteApplication"],
+      "features_after": ["JobApplicationTracker", "Database", "Applications", "CreateApplication", "ListApplications", "ViewApplication", "UpdateApplication", "DeleteApplication"],
       "description": "Set up the tracker application with fastAPI, creates application endpoints for CRUD operations."
     },
     {
       "id": "change-002",
       "operation": "relocate",
-      "features_before": ["JobApplicationTracker, Database, Applications, CreateApplication, ListApplications,ViewApplication, UpdateApplication, DeleteApplication"],
-      "features_after": ["JobApplicationTracker, Database, Applications, CreateApplication, ListApplications,ViewApplication, UpdateApplication, DeleteApplication"],
+      "features_before": ["Applications"],
+      "features_after": ["Applications"],
       "description": "Restructure the project folder by features. Change nothing about the API."
     }
   ],

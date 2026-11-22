@@ -6,3 +6,7 @@ JobApplicationTracker
         ViewApplication
         UpdateApplication
         DeleteApplication
+        ApplicationState
+            ChangeState
+            FilterByState
+            StateHistory

@@ -2,3 +2,7 @@ test_applications.py
 Applications
 conftest.py
 Database
+test_states.py
+ApplicationState
+test_history.py
+StateHistory

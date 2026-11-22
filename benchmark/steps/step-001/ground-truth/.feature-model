@@ -1,0 +1,8 @@
+JobApplicationTracker
+    Database
+    Applications
+        CreateApplication
+        ListApplications
+        ViewApplication
+        UpdateApplication
+        DeleteApplication

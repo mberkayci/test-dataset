@@ -1,0 +1,11 @@
+JobApplicationTracker
+    Database
+    Applications
+        CreateApplication
+        ListApplications
+        ViewApplication
+        UpdateApplication
+        DeleteApplication
+        ApplicationState
+            StateTransition
+            FilterState
